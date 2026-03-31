@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="SpinningDonut/SpinningDonut.vcxproj" Id="23f4e1dd-b875-4a31-bab1-504a7d34ab16" />
+</Solution>
