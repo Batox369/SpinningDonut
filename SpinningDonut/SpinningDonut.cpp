@@ -1,135 +1,131 @@
 #include <iostream>
 #include <cmath>
+#include <chrono>
+#include <thread>
+
 
 using namespace std;
 
 int main() {
 
-    const int R1 = 10, R2 = 3, FOV = 10;
-    const int width = 84, height = 26;
+    const int R1 = 10, R2 = 3, FOV = 10, DISTANCE = 15;
+    const int width = 90, height = 26;
+    const char DONUT_CHARS[] = {'.', ',', '-', '~', ':', ';', '#'};
     char screen[width][height];
+	float zBuffer[width][height];
 
     float theta, phi;
 
+    // RotX
+
+    float rotX = 0, rotY = 0;
+
     system("cls");
 
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-            screen[x][y] = ' ';
-        }
-    }
+    printf("\x1b[2J");
+    printf("\x1b[?25l");
 
-    for (phi = 0; phi < 6.28; phi += 0.02) {
-        for (theta = 0; theta < 6.28; theta += 0.02) {
+    while (true)
+    {
+		rotX += 0.0;
+		rotY += 0.3;
 
-            // X = (R + r*cos(theta)) * cos(phi)
-            // Y = (R + r*cos(theta)) * sen(phi)
-            // Z = r*sen(theta)
+        printf("\x1b[H");
 
-			float X = (R1 + R2 * cos(theta)) * cos(phi); // Need to find his min and max values to scale it to the screen
-			float Y = (R1 + R2 * cos(theta)) * sin(phi);
-			float Z = R2 * sin(theta) + FOV;
-
-			float projX = (X * FOV) / Z; // Max value when X = R1 + R2, Z = R2 + FOV |  Min value when X = -(R1 + R2), Z = -R2 + FOV 
-			float projY = (Y * FOV) / Z; // Max value when Y = R1 + R2, Z = R2 + FOV |  Min value when Y = -(R1 + R2), Z = -R2 + FOV
-
-			float maxProj = (R1 + R2) * FOV / (FOV - R2);
-
-            float scaleX = (width / 2.0) / maxProj;
-			float scaleY = (height / 2.0) / maxProj;
-
-			int screenX = static_cast<int>(projX * scaleX + width / 2);
-			int screenY = static_cast<int>(projY * scaleY + height / 2);
-
-            if (screenX >= 0 && screenX < width && screenY >= 0 && screenY < height) {
-                screen[screenX][screenY] = '|';
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                screen[x][y] = ' ';
+				zBuffer[x][y] = 0;
             }
-
         }
 
-    }
+        for (phi = 0; phi < 6.28; phi += 0.02) {
+            for (theta = 0; theta < 6.28; theta += 0.02) {
 
-    //system("cls");
+                // -- The parametric equation of the donut is
 
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-            cout << screen[x][y];
-        }
-        cout << endl;
-    }
+                // X = (R + r*cos(theta)) * cos(phi)
+                // Y = (R + r*cos(theta)) * sen(phi)
+                // Z = r*sen(theta)
 
-    return 0;
-}
+                float X = (R1 + R2 * cos(theta)) * cos(phi); // Need to find his min and max values to scale it to the screen
+                float Y = (R1 + R2 * cos(theta)) * sin(phi);
+                float Z = R2 * sin(theta);
 
-/*
-#include <iostream>
-#include <vector>
-#include <cmath>
-#include <cstring>
-#include <thread>
-#include <chrono>
+				float rotatedX = X;
+				float rotatedY = cos(rotX) * Y - sin(rotX) * Z;
+				float rotatedZ = sin(rotX) * Y + cos(rotX) * Z;
 
-int main() {
-    float A = 0, B = 0;
-    float i, j;
-    float z[1760];
-    char b[1760];
+				float tempRotatedX = rotatedX;
 
-    // Limpiar pantalla inicial
-    std::cout << "\x1b[2J";
-	std::cout << "\x1b[?25l"; // Ocultar cursor
+                rotatedX = cos(rotY) * tempRotatedX + sin(rotY) * rotatedZ;
+				rotatedY = rotatedY;
+				rotatedZ = -sin(rotY) * tempRotatedX + cos(rotY) * rotatedZ;
 
-    for (;;) {
-        // Inicializar buffers
-        std::memset(b, 32, 1760); // Espacios en blanco
-        std::memset(z, 0, 7040);  // Z-buffer de profundidad
+                X = rotatedX;
+                Y = rotatedY;
+				Z = rotatedZ;
 
-        // Bucle de renderizado de la superficie del toroide (dona)
-        for (j = 0; j < 6.28; j += 0.07) {
-            for (i = 0; i < 6.28; i += 0.02) {
-                float c = std::sin(i);
-                float d = std::cos(j);
-                float e = std::sin(A);
-                float f = std::sin(j);
-                float g = std::cos(A);
-                float h = d + 2;
-                float D = 1 / (c * h * e + f * g + 5);
-                float l = std::cos(i);
-                float m = std::cos(B);
-                float n = std::sin(B);
-                float t = c * h * g - f * e;
+                Z += DISTANCE;
 
-                // Proyección 2D
-                int x = static_cast<int>(40 + 30 * D * (l * h * m - t * n));
-                int y = static_cast<int>(12 + 15 * D * (l * h * n + t * m));
-                int o = x + 80 * y;
+				float ooz = 1 / Z; // "One over Z" is used to calculate the depth of the point and to scale the projection
 
-                // Cálculo de iluminación
-                int N = static_cast<int>(8 * ((f * e - c * d * g) * m - c * d * e - f * g - l * d * n));
+                float projX = (X * FOV) / Z; // Max value when X = R1 + R2, Z = R2 + FOV |  Min value when X = -(R1 + R2), Z = -R2 + FOV 
+                float projY = (Y * FOV) / Z; // Max value when Y = R1 + R2, Z = R2 + FOV |  Min value when Y = -(R1 + R2), Z = -R2 + FOV
 
-                if (22 > y && y > 0 && x > 0 && 80 > x && D > z[o]) {
-                    z[o] = D;
-                    b[o] = ".,-~:;=!*#$@"[N > 0 ? N : 0];
+                float maxProj = (R1 + R2) * FOV / (FOV - R2);
+
+                float scaleX = (width / 2.0) / maxProj;
+                float scaleY = (height / 2.0) / maxProj;
+
+                int screenX = static_cast<int>((projX * scaleX + width / 2) / 1.5);
+                int screenY = static_cast<int>(projY * scaleY + height / 2);
+
+                // Calculating the normal vector of the surface at the point (theta, phi) and adding light
+
+                float nX = cos(theta) * cos(phi);
+                float nY = cos(theta) * sin(phi);
+                float nZ = sin(theta);
+
+				float rotatedNX = nX;
+				float rotatedNY = cos(rotX) * nY - sin(rotX) * nZ;
+				float rotatedNZ = sin(rotX) * nY + cos(rotX) * nZ;
+
+                float tempRotatedNX = rotatedNX;
+
+				rotatedNX = cos(rotY) * tempRotatedNX + sin(rotY) * rotatedNZ;
+				rotatedNY = rotatedNY;
+				rotatedNZ = -sin(rotY) * tempRotatedNX + cos(rotY) * rotatedNZ;
+
+				nX = rotatedNX;
+				nY = rotatedNY;
+				nZ = rotatedNZ;
+
+                // Were assuming light (0,0,-1)
+                float lightEmision = -nZ * 7;
+
+                if (screenX >= 0 && screenX < width && screenY >= 0 && screenY < height) {
+                    if (ooz > zBuffer[screenX][screenY]) {
+                        zBuffer[screenX][screenY] = ooz;
+                        if (lightEmision > 0) {
+                            int charIndex = static_cast<int>(lightEmision);
+                            screen[screenX][screenY] = DONUT_CHARS[charIndex];
+                        }
+                    }
                 }
             }
+
         }
 
-        // Mover cursor al inicio de la terminal
-        std::cout << "\x1b[H";
-        for (int k = 0; k < 1761; k++) {
-            std::putchar(k % 80 ? b[k] : 10);
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                cout << screen[x][y];
+            }
+            cout << endl;
         }
 
-        // Incrementar ángulos de rotación
-        A += 0.04f;
-        B += 0.02f;
-
-        // Pequeña pausa para no saturar la CPU (opcional en C++)
-        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+		this_thread::sleep_for(chrono::milliseconds(20));
     }
 
-	std::cout << "\x1b[?25h"; // Mostrar cursor al salir
-    
     return 0;
 }
-*/
