@@ -131,6 +131,10 @@
     <ClCompile Include="SpinningCube.cpp" />
     <ClCompile Include="SpinningDonut.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SpinningCube.h" />
+    <ClInclude Include="SpinningDonut.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

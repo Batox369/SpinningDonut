@@ -1,4 +1,7 @@
-/*#include <iostream>
+#include <iostream>
+
+#include "SpinningDonut.h"
+#include "SpinningCube.h"
 
 using namespace std;
 
@@ -10,29 +13,27 @@ void mostrarOpciones() {
 	cout << "(1). Dona" << endl;
 	cout << "(2). Cubo" << endl;
 	cout << "(3). Piramide" << endl;
+	cout << endl;
+	cout << "(0). Salir" << endl;
 }
 
-/*int main() {
+int main() {
 
 	do {
-		mostrarOpciones;
+		mostrarOpciones();
 
 		cout << "Ingrese su opcion --> ";
 		cin >> opcion;
 		switch (opcion) {
-			case '1': {
-
-			}
-			case '2': {
-
-			}
-
-			default
-
+			case '1':
+				mostrarDona();
+				break;
+			case '2':
+				startCubeRendering();
+			default: { }
 		}
 		
-
 	} while (opcion != '0');
 
 	return 0;
-}*/
+}
