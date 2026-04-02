@@ -10,7 +10,7 @@ const int WIDTH = 90, HEIGHT = 26;
 const int SIDE = 6;
 const int FOV = 40, DISTANCE = 50;
 
-const char CUBE_CHARS[] = { '.', ',', '-', '~', ':', ';', '=', '#' };
+const char CUBE_CHARS[] = { '.', ',', '-', '~', ':', ';', '=', 'x', '#', '@'};
 
 float cubeSide = 0.0;
 
@@ -38,7 +38,7 @@ UnitVector faceNormals[6] = {
 	{ -1, 0, 0 }   // Left
 };
 
-const UnitVector LIGTH_VECTOR = { 0, 1, 0 };
+const UnitVector LIGTH_VECTOR = { -0.707f, 0.707f, 0 };
 
 void initScreen() {
 	for (int y = 0; y < HEIGHT; y++) {
@@ -63,8 +63,8 @@ void makeCube() {
 
 	float sideWidth, sideHeight, halfSide = SIDE / 2.0;
 
-	for (sideWidth = -halfSide; sideWidth <= halfSide; sideWidth += 0.1) {
-		for (sideHeight = -halfSide; sideHeight <= halfSide; sideHeight += 0.1) {
+	for (sideWidth = -halfSide; sideWidth <= halfSide; sideWidth += 0.02) {
+		for (sideHeight = -halfSide; sideHeight <= halfSide; sideHeight += 0.02) {
 				
 			cubePoints.push_back({ sideWidth, sideHeight, halfSide, 0 }); // Front face
 			cubePoints.push_back({ sideWidth, sideHeight, -halfSide, 1 }); // Back face
@@ -98,6 +98,8 @@ void drawCube(float theta, float phi) {
 			{ 1, 0, 0 },   // Right
 			{ -1, 0, 0 }   // Left
 		};
+				
+		// Rotation in X-asis for the cube normals
 
 		float YTemp = STATIC_FACE_NORMALS[i].y;
 
@@ -107,8 +109,19 @@ void drawCube(float theta, float phi) {
 			YTemp * sin(theta) + STATIC_FACE_NORMALS[i].z * cos(theta)
 		};
 
+		// Rotation in Y-asis for the cube normals
+		
+		float XTemp = faceNormals[i].x;
+
+		faceNormals[i] = {
+			faceNormals[i].x * cos(phi) + faceNormals[i].z * sin(phi),
+			faceNormals[i].y,
+			-XTemp * sin(phi) + faceNormals[i].z * cos(phi)
+		};
+
 		float dot = faceNormals[i].x * LIGTH_VECTOR.x + faceNormals[i].y * LIGTH_VECTOR.y + faceNormals[i].z * LIGTH_VECTOR.z;
-		faceNormals[i].brightness = (dot > 0) ? static_cast<int>(dot * 7) : 0;
+		float brightness = (dot + 1) / 2;
+		faceNormals[i].brightness = static_cast<int>(brightness * 9);
 	}
 
 	for (size_t i = 0; i < cubePoints.size(); ++i) {
@@ -116,24 +129,40 @@ void drawCube(float theta, float phi) {
 		float actualY = cubePoints[i].y;
 		float actualZ = cubePoints[i].z;
 
+		// Rotation in X-asis for the cube points
+
 		float tempY = actualY;
 
 		actualX = actualX;
 		actualY = actualY * cos(theta) - actualZ * sin(theta);
 		actualZ = tempY * sin(theta) + actualZ * cos(theta);
 
+		// Rotation in Y-asis for the cube points
+
+		float tempX = actualX;
+
+		actualX = actualX * cos(phi) + actualZ * sin(phi);
+		actualY = actualY;
+		actualZ = -tempX * sin(phi) + actualZ * cos(phi);
+
 		projX = (actualX * FOV) / (actualZ + DISTANCE);
 		projY = (actualY * FOV) / (actualZ + DISTANCE);
 
 		float ooz = 1 / (actualZ + DISTANCE);
 
-		int screenX = static_cast<int>((projX * scaleX) + WIDTH / 2);
+		int screenX = static_cast<int>(((projX * scaleX)/1.5) + WIDTH / 2);
 		int screenY = static_cast<int>((projY * scaleY) + HEIGHT / 2);
 
-		if (ooz > zBuffer[screenX][screenY]) {
-			zBuffer[screenX][screenY] = ooz;
-			if (CUBE_CHARS[faceNormals[cubePoints[i].faceID].brightness] > 0) {
-				screen[screenX][screenY] = CUBE_CHARS[faceNormals[cubePoints[i].faceID].brightness];
+		if (screenX >= 0 && screenX < WIDTH && screenY >= 0 && screenY < HEIGHT) {
+			
+			if (ooz > zBuffer[screenX][screenY]) {
+			
+				zBuffer[screenX][screenY] = ooz;
+				
+				if (CUBE_CHARS[faceNormals[cubePoints[i].faceID].brightness] > 0) {
+					screen[screenX][screenY] = CUBE_CHARS[faceNormals[cubePoints[i].faceID].brightness];
+				
+				}
 			}
 		}
 	}
@@ -166,7 +195,6 @@ void startCubeRendering() {
 		printf("\x1b[H");
 
 		drawCube(theta, phi);
-		cout << "Theta: " << theta << " | Phi: " << phi << endl;
 
 		this_thread::sleep_for(chrono::milliseconds(20));
 	}
