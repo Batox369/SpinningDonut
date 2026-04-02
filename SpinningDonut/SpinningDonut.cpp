@@ -9,7 +9,9 @@ int main() {
 
     const int R1 = 10, R2 = 3, FOV = 40, DISTANCE = 50;
     const int width = 90, height = 26;
+    
     const char DONUT_CHARS[] = { '.', ',', '-', '~', ':', ';', '=', '#' };
+
     char screen[width][height];
     float zBuffer[width][height];
 
