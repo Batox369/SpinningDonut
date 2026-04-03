@@ -4,18 +4,16 @@
 #include <chrono>
 #include <thread>
 
+#include "ScreenHandler.h"
+
 using namespace std;
 
-const int WIDTH = 90, HEIGHT = 26;
 const int SIDE = 6;
 const int FOV = 40, DISTANCE = 50;
 
 const char CUBE_CHARS[] = { '.', ',', '-', '~', ':', ';', '=', 'x', '#', '@'};
 
 float cubeSide = 0.0;
-
-char screen[WIDTH][HEIGHT];
-float zBuffer[WIDTH][HEIGHT];
 
 struct Point3D {
 	float x, y, z;
@@ -24,7 +22,7 @@ struct Point3D {
 
 struct UnitVector {
 	float x, y, z;
-	int brightness; // 0 to 7, where 0 is darkest and 7 is brightest
+	int brightness;
 };
 
 vector<Point3D> cubePoints;
@@ -39,15 +37,6 @@ UnitVector faceNormals[6] = {
 };
 
 const UnitVector LIGTH_VECTOR = { -0.707f, 0.707f, 0 };
-
-void initScreen() {
-	for (int y = 0; y < HEIGHT; y++) {
-		for (int x = 0; x < WIDTH; x++) {
-			screen[x][y] = ' ';
-			zBuffer[x][y] = 0;
-		}
-	}
-}
 
 void makeCube() {
 
@@ -85,8 +74,10 @@ void drawCube(float theta, float phi) {
 	float projX, projY;
 	float maxProj = SIDE / 2 * sqrt(3);
 
-	float scaleX = (WIDTH / 2.0) / maxProj;
-	float scaleY = (HEIGHT / 2.0) / maxProj;
+	float scaleX = (Display::getWidth() / 2.0) / maxProj;
+	float scaleY = (Display::getHeight() / 2.0) / maxProj;
+
+	Display& display = Display::getInstance();
 
 	for (int i = 0; i < 6; i++) {
 		
@@ -145,39 +136,30 @@ void drawCube(float theta, float phi) {
 		actualY = actualY;
 		actualZ = -tempX * sin(phi) + actualZ * cos(phi);
 
+		// Projection of the 3D point to the 2D screen
+
 		projX = (actualX * FOV) / (actualZ + DISTANCE);
 		projY = (actualY * FOV) / (actualZ + DISTANCE);
 
 		float ooz = 1 / (actualZ + DISTANCE);
 
-		int screenX = static_cast<int>(((projX * scaleX)/1.5) + WIDTH / 2);
-		int screenY = static_cast<int>((projY * scaleY) + HEIGHT / 2);
+		int screenX = static_cast<int>(((projX * scaleX)/1.5) + Display::getWidth() / 2.0);
+		int screenY = static_cast<int>((projY * scaleY) + Display::getHeight() / 2.0);
 
-		if (screenX >= 0 && screenX < WIDTH && screenY >= 0 && screenY < HEIGHT) {
-			
-			if (ooz > zBuffer[screenX][screenY]) {
-			
-				zBuffer[screenX][screenY] = ooz;
-				
-				if (CUBE_CHARS[faceNormals[cubePoints[i].faceID].brightness] > 0) {
-					screen[screenX][screenY] = CUBE_CHARS[faceNormals[cubePoints[i].faceID].brightness];
-				
-				}
-			}
-		}
+		display.setPixel(screenX, screenY, ooz, CUBE_CHARS[faceNormals[cubePoints[i].faceID].brightness]);
+
 	}
 
-	for (int y = 0; y < HEIGHT; y++) {
-		for (int x = 0; x < WIDTH; x++) {
-			cout << screen[x][y];
-		}
-		cout << endl;
-	}
+	// The actual render of the screen
+
+	display.renderScreen();
 }
 
 void startCubeRendering() {
 	
 	float theta = 0.0, phi = 0.0;
+
+	Display& display = Display::getInstance();
 	
 	makeCube();
 
@@ -187,7 +169,7 @@ void startCubeRendering() {
 	printf("\x1b[?25l");
 
 	while (true) {
-		initScreen();
+		display.clearScreen();
 
 		theta += 0.05;
 		phi += 0.03;

@@ -2,6 +2,7 @@
 
 #include "SpinningDonut.h"
 #include "SpinningCube.h"
+#include "SpinningPyramid.h"
 
 using namespace std;
 
@@ -30,6 +31,10 @@ int main() {
 				break;
 			case '2':
 				startCubeRendering();
+				break;
+			case '3':
+				startRenderingPyramid();
+				break;
 			default: { }
 		}
 		

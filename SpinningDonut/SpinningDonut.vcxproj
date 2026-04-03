@@ -128,12 +128,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ScreenHandler.cpp" />
     <ClCompile Include="SpinningCube.cpp" />
     <ClCompile Include="SpinningDonut.cpp" />
+    <ClCompile Include="SpinningPyramid.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ScreenHandler.h" />
     <ClInclude Include="SpinningCube.h" />
     <ClInclude Include="SpinningDonut.h" />
+    <ClInclude Include="SpinningPyramid.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
