@@ -4,4 +4,6 @@
 #include <chrono>
 #include <thread>
 
-void mostrarDona();
+void makeDonut();
+void drawDonut();
+void startRenderingDonut();

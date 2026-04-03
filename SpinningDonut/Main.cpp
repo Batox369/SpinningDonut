@@ -27,7 +27,7 @@ int main() {
 		cin >> opcion;
 		switch (opcion) {
 			case '1':
-				mostrarDona();
+				startRenderingDonut();
 				break;
 			case '2':
 				startCubeRendering();

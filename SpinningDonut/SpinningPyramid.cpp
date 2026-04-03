@@ -30,7 +30,6 @@ UnitVector facePNormals[6] = {
 	{ 0, 1, 0 },   // Top
 	{ 0, -1, 0 },  // Bottom
 	{ 1, 0, 0 },   // Right
-	{ -1, 0, 0 }   // Left
 };
 
 const UnitVector LIGTH_VECTOR = { 1.0f, 0, 0 };
@@ -48,10 +47,12 @@ void makePyramid() {
 		float currentHalfSide = currentSide / 2.0;
 
 		for (float sideWidth = -currentHalfSide; sideWidth <= currentHalfSide; sideWidth += 0.1f) {
+			
 			pyramidPoints.push_back({ sideWidth, sideHeight, currentHalfSide, 0 }); // Front face
 			pyramidPoints.push_back({ sideWidth, sideHeight, -currentHalfSide, 1 }); // Back face
 			pyramidPoints.push_back({ currentHalfSide, sideHeight, sideWidth, 2 }); // Right face
 			pyramidPoints.push_back({ -currentHalfSide, sideHeight, sideWidth, 3 }); // Left face
+		
 		}
 	}
 
@@ -66,7 +67,6 @@ void drawPyramid(float theta) {
 
 	Display& display = Display::getInstance();
 
-	
 	static const UnitVector STATIC_FACE_NORMALS[5] = {
 		{ 0.0f,    -0.447f,  0.894f }, 
 		{ 0.0f,    -0.447f, -0.894f }, 
