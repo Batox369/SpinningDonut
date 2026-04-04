@@ -69,12 +69,12 @@ if (depth > zBuffer[X][Y]) {
 When you run the program, a menu will appear:
 
 ```
-------| FIGURAS 3D |------
-(1). Dona
-(2). Cubo
-(3). Piramide
+------| SPINNING GEOMETRY |------
+(1). Donut
+(2). Cube
+(3). Pyramid
 
-(0). Salir
+(0). EXIT
 ```
 
 Select a number and press Enter to watch the figure spin. Press `Ctrl + C` to stop the animation and return to the menu.
@@ -94,16 +94,12 @@ Select a number and press Enter to watch the figure spin. Press `Ctrl + C` to st
 
 ---
 
-## 📷 Preview
+## Preview
 
 The rendering uses ASCII art directly in the terminal. Enable ANSI escape codes in your Windows terminal for the best experience (Windows Terminal or VS Code integrated terminal recommended).
 
 ---
 
-## 📜 License
-
 This project is open source and free to use for educational purposes.
-
----
 
 *Made by [Batox369](https://github.com/Batox369)*
