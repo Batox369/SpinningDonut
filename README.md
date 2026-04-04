@@ -1,24 +1,14 @@
-# 🍩 Spinning Geometry — ASCII 3D Renderer in C++
+# Spinning Geometry — ASCII 3D Renderer in C++
 
 A terminal-based 3D renderer written in C++ that animates geometric figures using ASCII characters and classic rasterization techniques. Includes a spinning **Donut (Torus)**, a **Cube**, and a **Pyramid**.
 
-```
-         .  .....  ....
-      ,;=~:::::::::::::~;=,
-    ,=::::::::::::::::::::::::=,
-   ;:::::::::::::::::::::::::::;
-   ~::::::::::::::::::::::::::::~
-   ~::::::::::::::::::::::::::::~
-    =::::::::::::::::::::::::=
-      ~;::::::::::::::::;~
-          ....   ....
-```
+*Inspired by Andy Sloane's classic "Donut math" article and the Green Code video.*
 
 ---
 
-## ✨ Features
+## Features
 
-- **3D Torus (Donut)** rendered with rotation on X and Z axes
+- **3D Donut** rendered with rotation on X and Z axes
 - **3D Cube** with perspective projection
 - **3D Pyramid** with surface shading
 - ASCII-based lighting using the Z-component of surface normals
@@ -28,21 +18,7 @@ A terminal-based 3D renderer written in C++ that animates geometric figures usin
 
 ---
 
-## 📁 Project Structure
-
-```
-SpinningDonut/
-├── Main.cpp               # Entry point — interactive menu
-├── SpinningDonut.h/.cpp   # Torus rendering logic
-├── SpinningCube.h/.cpp    # Cube rendering logic
-├── SpinningPyramid.h/.cpp # Pyramid rendering logic
-├── ScreenHandler.h/.cpp   # Display singleton (screen buffer + Z-buffer)
-└── SpinningDonut.vcxproj  # Visual Studio project file
-```
-
----
-
-## ⚙️ How It Works
+## How It Works
 
 ### 3D Projection
 
@@ -53,9 +29,9 @@ screenX = (X * FOV / Z) * scaleX + width / 2
 screenY = (Y * FOV / Z) * scaleY + height / 2
 ```
 
-### Torus Equation
+### Donut Equation
 
-The surface of the torus is parameterized by two angles, `phi` (θ₁) and `theta` (θ₂):
+The surface of the donut is parameterized by two angles, `phi` (θ₁) and `theta` (θ₂):
 
 ```
 X = (R1 + R2 * cos(theta)) * cos(phi)
@@ -88,36 +64,7 @@ if (depth > zBuffer[X][Y]) {
 }
 ```
 
----
-
-## 🚀 Getting Started
-
-### Requirements
-
-- Windows OS (uses `system("cls")` and ANSI escape codes)
-- C++17 or later
-- Visual Studio 2022 (or any C++ compiler with `<thread>` support)
-
-### Build & Run (Visual Studio)
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Batox369/SpinningDonut.git
-   ```
-2. Open `SpinningDonut.slnx` in Visual Studio
-3. Build the project (`Ctrl + Shift + B`)
-4. Run (`F5`)
-
-### Build & Run (g++ / MinGW)
-
-```bash
-g++ -std=c++17 -o SpinningDonut Main.cpp SpinningDonut.cpp SpinningCube.cpp SpinningPyramid.cpp ScreenHandler.cpp
-./SpinningDonut
-```
-
----
-
-## 🎮 Usage
+## Usage
 
 When you run the program, a menu will appear:
 
@@ -134,7 +81,7 @@ Select a number and press Enter to watch the figure spin. Press `Ctrl + C` to st
 
 ---
 
-## 🧠 Concepts Explored
+## Concepts Explored
 
 | Concept | Description |
 |---|---|
