@@ -10,12 +10,12 @@ char opcion = ' ';
 
 void mostrarOpciones() {
 	system("cls");
-	cout << "------| FIGURAS 3D |------" << endl;
-	cout << "(1). Dona" << endl;
-	cout << "(2). Cubo" << endl;
-	cout << "(3). Piramide" << endl;
+	cout << "------| Spinning Geometry |------" << endl;
+	cout << "(1). Donut" << endl;
+	cout << "(2). Cube" << endl;
+	cout << "(3). Pyramid" << endl;
 	cout << endl;
-	cout << "(0). Salir" << endl;
+	cout << "(0). Exit" << endl;
 }
 
 int main() {
@@ -23,7 +23,7 @@ int main() {
 	do {
 		mostrarOpciones();
 
-		cout << "Ingrese su opcion --> ";
+		cout << "OPTION --> ";
 		cin >> opcion;
 		switch (opcion) {
 			case '1':
