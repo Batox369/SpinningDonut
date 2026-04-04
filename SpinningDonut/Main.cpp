@@ -10,12 +10,12 @@ char opcion = ' ';
 
 void mostrarOpciones() {
 	system("cls");
-	cout << "------| Spinning Geometry |------" << endl;
+	cout << "------| SPINNING GEOMETRY |------" << endl;
 	cout << "(1). Donut" << endl;
 	cout << "(2). Cube" << endl;
 	cout << "(3). Pyramid" << endl;
 	cout << endl;
-	cout << "(0). Exit" << endl;
+	cout << "(0). EXIT" << endl;
 }
 
 int main() {
