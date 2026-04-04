@@ -79,6 +79,13 @@ void drawCube(float theta, float phi) {
 
 	Display& display = Display::getInstance();
 
+	// This loop will calculate the normal vectors for each face of the cube 
+	// after applying the rotations defined by theta and phi.
+	// 
+	// The normal vectors are essential for determining how light interacts 
+	// with the surfaces of the cube, which in turn affects the brightness 
+	// of each face when rendered on the screen.
+
 	for (int i = 0; i < 6; i++) {
 		
 		const UnitVector STATIC_FACE_NORMALS[6] = {
@@ -114,6 +121,9 @@ void drawCube(float theta, float phi) {
 		float brightness = (dot + 1) / 2;
 		faceNormals[i].brightness = static_cast<int>(brightness * 9);
 	}
+
+	// This loop will iterate over each point of the cube, apply the necessary transformations,
+	// and then project them onto a 2D plane to display on the console.
 
 	for (size_t i = 0; i < cubePoints.size(); ++i) {
 		float actualX = cubePoints[i].x;

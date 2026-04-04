@@ -2,6 +2,7 @@
 
 class Display {
 public:
+	
 	static Display& getInstance();
 
 	Display(const Display&) = delete;
@@ -13,7 +14,9 @@ public:
 	void setPixel(int X, int Y, float depth, char symbol);
 	void clearScreen();
 	void renderScreen();
+
 private:
+	
 	Display();
 
 	static constexpr int WIDTH = 90, HEIGHT = 26;

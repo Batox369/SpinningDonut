@@ -13,7 +13,6 @@ Display::Display() {
 }
 
 void Display::setPixel(int X, int Y, float depth, char symbol) {
-	// This function will set a pixel on the screen at a specific coordinate with a specific character and depth value.
 
 	if (X >= 0 && X < WIDTH && Y >= 0 && Y < HEIGHT) {
 		if (depth > zBuffer[X][Y]) {
@@ -24,6 +23,7 @@ void Display::setPixel(int X, int Y, float depth, char symbol) {
 }
 
 void Display::clearScreen() {
+
 	for (int y = 0; y < HEIGHT; y++) {
 		for (int x = 0; x < WIDTH; x++) {
 			screen[x][y] = ' ';
@@ -33,6 +33,7 @@ void Display::clearScreen() {
 }
 
 void Display::renderScreen() {
+
 	for (int y = 0; y < HEIGHT; y++) {
 		for (int x = 0; x < WIDTH; x++) {
 			cout << screen[x][y];

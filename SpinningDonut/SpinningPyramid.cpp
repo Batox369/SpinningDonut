@@ -37,11 +37,20 @@ const UnitVector LIGTH_VECTOR = { 1.0f, 0, 0 };
 vector<Point3D> pyramidPoints;
 
 void makePyramid() {
+
+	// For the pyramid, we will iterate over a grid of points on each face, 
+	// but the size of the grid will decrease as we move up the pyramid.
+	// 
+	// We´re just creating a square a reducing its size as we move up the 
+	// pyramid, so we can use the same loop for all faces, just changing 
+	// the coordinates of the points.
+
+
 	float sideWidth, sideHeight, halfSide = SIDE / 2.0;
 	float pyramidHeight = SIDE;
 	
 	for (sideHeight = 0; sideHeight <= pyramidHeight; sideHeight += 0.1f) {
-		// We are making squares
+		// We´re making squares
 		
 		float currentSide = (sideHeight / pyramidHeight) * SIDE;
 		float currentHalfSide = currentSide / 2.0;
